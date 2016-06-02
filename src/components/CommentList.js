@@ -12,7 +12,7 @@ class CommentList extends Component {
     componentWillReceiveProps(newProps) {
         const { isOpen, article } = newProps
         const { id, commentsLoaded } = article
-
+        // commentsLoaded === undefined можно, но это неочевидно и небезопасно, лучше ставить более явный флаг, типа !commentsLoading 
         if (isOpen && commentsLoaded === undefined) loadArticleComments({ id })
     }
 
