@@ -44,17 +44,18 @@ export default class Article extends BasicStore {
                     break
 
                 case LOAD_ARTICLE_COMMENTS + START:
-                    this.getById(payload.id).commentsLoaded = false
+                    this.getById(payload.id).comments.loading = true
                     break
 
                 case LOAD_ARTICLE_COMMENTS + SUCCESS:
                     AppDispatcher.waitFor([this.getStores().comments.dispatchToken])
-                    this.getById(payload.id).commentsLoaded = true
+                    this.getById(payload.id).comments.loading = false
+                    return
                     break
 
                 case LOAD_ARTICLE_COMMENTS + FAIL:
                     AppDispatcher.waitFor([this.getStores().comments.dispatchToken])
-                    this.getById(payload.id).commentsLoaded = false
+                    this.getById(payload.id).comments.loading = false
                     break
 
                 default:

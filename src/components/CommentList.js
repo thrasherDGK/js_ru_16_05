@@ -11,9 +11,13 @@ class CommentList extends Component {
 
     componentWillReceiveProps(newProps) {
         const { isOpen, article } = newProps
-        const { id, commentsLoaded } = article
-        // commentsLoaded === undefined можно, но это неочевидно и небезопасно, лучше ставить более явный флаг, типа !commentsLoading 
-        if (isOpen && commentsLoaded === undefined) loadArticleComments({ id })
+        const { id } = article
+        const commentsLoading = article.comments.loading
+        const comments = article.getRelation('comments')
+        // commentsLoaded === undefined можно, но это неочевидно и небезопасно, лучше ставить более явный флаг, типа !commentsLoading
+        const commentsLoaded = comments.every((comment) => comment != undefined)
+
+        if (isOpen && !commentsLoaded &&!commentsLoading) loadArticleComments({ id })
     }
 
     render() {
@@ -33,11 +37,11 @@ class CommentList extends Component {
 
     getList() {
         const { isOpen, article } = this.props
-        const { commentsLoaded } = article
+        const commentsLoading = article.comments.loading
         const comments = article.getRelation('comments')
         if (!isOpen) return null
         if (!comments || !comments.length || comments.some((comment) => comment === undefined)) {
-            return <h3>{commentsLoaded ? 'No comments yet' : 'Loading...'}</h3>
+            return <h3>{commentsLoading ? 'Loading...' : 'No comments yet'}</h3>
         }
         const items = comments.map(comment => <li key = {comment.id}><Comment comment = {comment} /></li>)
         return <ul>
